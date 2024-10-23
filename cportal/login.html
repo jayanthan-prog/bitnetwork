@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta http-equiv="Cache-Control: no-store, no-cache, must-revalidate, max-age=0" />
+    <meta http-equiv="Pragma: no-cache" />
+    <meta http-equiv="Expires" content="-1">
+    <meta name="apple-mobile-web-app-capable" content="no" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" media="all" href="/cportal/cp_style.css?ts=3" />
+    <script type="text/javascript" src="/cportal/srp/srp_config.js?ts=3"></script>
+
+    <!-- YOU CAN CUSTOMIZE color, background, style, etc.. by editing cp_style.css -->
+
+    <title>Login</title>
+
+    <script language="javascript" type="text/javascript">
+        var g_default_login_help_txt = "Please login to access the internet";
+        var g_mobile_login_help_txt = "Guest users, please click on below link to receive OTP and access the internet";
+        var g_mid_login_help_txt = "Existing Members, please click on below link to receive OTP and access the internet";
+    </script>
+
+    <!-- DO NOT EDIT BELOW THIS LINE -->
+
+    <script language="javascript" type="text/javascript">
+        var g_popup_status_window = 1;
+        var g_modal = null;
+        var g_msg_p = null;
+
+        function gup(name) {
+            name = name.replace(/[\[]/, "\\\[").replace(/[\]]/, "\\\]");
+            var regexS = "[\\?&]" + name + "=([^&#]*)";
+            var regex = new RegExp(regexS);
+            var results = regex.exec(window.location.href);
+            if (results == null) return "";
+            else return results[1];
+        }
+
+        function show_alert(msg) {
+            if (g_modal) {
+                g_msg_p.innerHTML = msg;
+                g_modal.style.display = "block";
+            } else {
+                alert(msg);
+            }
+        }
+
+        function checkFormFields() {
+            var usernamef = document.getElementById('usrname').value;
+            var newpasswdf = document.getElementById('newpasswd').value;
+            var termsf = document.getElementById('terms').checked;
+            if (usernamef == "") {
+                show_alert("Please fill User Id");
+                return false;
+            }
+            if (newpasswdf == "") {
+                show_alert("Please fill Passsword");
+                return false;
+            }
+            if (termsf != true) {
+                show_alert("Please accept Terms and Conditions.");
+                return false;
+            }
+            if (g_popup_status_window) {
+                window.open("/submit/status_login.php", "HotSpotLoginStatus", "toolbar=no,status=no,width=340,height=210,left=100,top=100").focus();
+            }
+            return true;
+        }
+
+        function snLoginClick(sn) {
+            var org_url = gup('url');
+            document.snform.sn_type.value = sn;
+            document.snform.sn_org_url.value = org_url;
+            return true;
+        }
+
+        function update_label(id, val) {
+            var rl = document.getElementById(id, val);
+            if (rl) {
+                rl.innerHTML = val;
+            }
+        }
+
+        function show_link(id) {
+            var rl = document.getElementById(id);
+            if (rl) {
+                rl.style.visibility = "visible";
+                rl.style.display = "";
+            }
+        }
+
+        function init_modal() {
+            g_modal = document.getElementById('myModal');
+            g_msg_p = document.getElementById("id-modal-msg");
+            var span = document.getElementById("modal-span");
+            span.onclick = function() {
+                g_modal.style.display = "none";
+            }
+            window.onclick = function(event) {
+                if (event.target == g_modal) {
+                    g_modal.style.display = "none";
+                }
+            }
+        }
+
+        function init() {
+            var org_url = gup('url');
+
+            document.getElementById("org_url").value = org_url;
+            document.getElementById("usrname").focus();
+
+            init_modal();
+
+            var srp_update_help_txt = 1;
+
+            if (typeof srp_config != 'undefined') {
+                if (srp_config.status_window_type && srp_config.status_window_type != "popup") {
+                    g_popup_status_window = 0;
+                }
+
+                if (srp_config.srp_mid_enable) {
+                    show_link("srp_mid_link_id");
+                    update_label("srp_mid_label_id", srp_config.srp_mid_link_label);
+                    update_label("srp_login_help_id", g_mid_login_help_txt);
+                    srp_update_help_txt = 0;
+                }
+                if (srp_config.srp_mr_enable) {
+                    show_link("srp_mr_link_id");
+                    update_label("srp_mr_label_id", srp_config.srp_mr_link_label);
+                    update_label("srp_login_help_id", g_mobile_login_help_txt);
+                    srp_update_help_txt = 0;
+                }
+                if (srp_config.srp_ur_enable) {
+                    show_link("srp_ur_link_id");
+                    update_label("srp_ur_label_id", srp_config.srp_ur_link_label);
+                }
+                if (srp_config.srp_vr_enable) {
+                    show_link("srp_vr_link_id");
+                    update_label("srp_vr_label_id", srp_config.srp_vr_link_label);
+                }
+                if (srp_config.srp_pr_enable) {
+                    show_link("srp_pr_link_id");
+                    update_label("srp_pr_label_id", srp_config.srp_pr_link_label);
+                }
+                if (srp_config.forgot_passwd) {
+                    show_link("forgot_pass_link_id");
+                    update_label("f_pass_label_id", srp_config.f_pass_link_label);
+                }
+                if (srp_config.srp_pnp_enable) {
+                    show_link("srp_pnp_link_id");
+                    update_label("srp_pnp_label_id", srp_config.srp_pnp_link_label);
+                }
+                if (srp_config.srp_sng_enable) {
+                    show_link("srp_sngg_link_id");
+                    show_link("id_div_sn_login");
+                }
+                if (srp_config.srp_snf_enable) {
+                    show_link("srp_snfb_link_id");
+                    show_link("id_div_sn_login");
+                }
+                if (srp_config.srp_sni_enable) {
+                    show_link("srp_snig_link_id");
+                    show_link("id_div_sn_login");
+                }
+                if (srp_config.srp_snt_enable) {
+                    show_link("srp_sntw_link_id");
+                    show_link("id_div_sn_login");
+                }
+                if (srp_config.srp_saml_enable1) {
+                    show_link("srp_saml_link_id1");
+                    update_label("srp_saml_label_id1", srp_config.srp_saml_link_label1);
+                }
+                if (srp_config.srp_saml_enable2) {
+                    show_link("srp_saml_link_id2");
+                    update_label("srp_saml_label_id2", srp_config.srp_saml_link_label2);
+                }
+                if (srp_config.srp_saml_enable3) {
+                    show_link("srp_saml_link_id3");
+                    update_label("srp_saml_label_id3", srp_config.srp_saml_link_label3);
+                }
+                if (srp_config.srp_pgw_ve_enable) {
+                    show_link("srp_pgw_ve_link_id");
+                    update_label("srp_pgw_ve_label_id", srp_config.srp_pgw_ve_link_label);
+                }
+                if (srp_config.srp_pgw_sb_enable) {
+                    show_link("srp_pgw_sb_link_id");
+                    update_label("srp_pgw_sb_label_id", srp_config.srp_pgw_sb_link_label);
+                }
+            }
+            if (srp_update_help_txt) {
+                update_label("srp_login_help_id", g_default_login_help_txt);
+            }
+        }
+
+        function showTermsWindow() {
+            window.open("/cportal/terms.html", "TermsWindow", "toolbar=no,status=no,scrollbars=yes,width=600,height=500,left=100,top=50").focus();
+        }
+
+        function show_regn_window(url) {
+            var h = 550,
+                w = 600,
+                t = 50;
+            var y = window.top.outerHeight / 2 + window.top.screenY - (h / 2)
+            var x = window.top.outerWidth / 2 + window.top.screenX - (w / 2)
+            window.open(url, "Registration", "toolbar=no,status=no,scrollbars=yes,width=" + w + ",height=" + h + ",left=" + x + ",top=" + t).focus();
+        }
+
+        function show_regn_page(url) {
+            var o_url = document.getElementById("org_url").value
+            var page_sid = document.getElementById("page_sid").value
+            var n_url = url + "?page_sid=" + page_sid + '&url=' + o_url;
+
+            if (window.top) {
+                window.top.location.href = n_url;
+            } else {
+                window.location.href = n_url;
+            }
+        }
+
+        function show_saml_regn_page(sp_id, url) {
+            var o_url = document.getElementById("org_url").value
+            var page_sid = document.getElementById("page_sid").value
+            var n_url = url + "?page_sid=" + page_sid + '&sp_id=' + sp_id + '&url=' + o_url;
+
+            if (window.top) {
+                window.top.location.href = n_url;
+            } else {
+                window.location.href = n_url;
+            }
+        }
+
+        function show_mid_window() {
+            show_regn_page("/cportal/ip/srp/mid_regn.php");
+        }
+
+        function show_mr_window() {
+            show_regn_page("/cportal/ip/srp/mobile_regn.php");
+        }
+
+        function show_vr_window() {
+            show_regn_page("/cportal/ip/srp/voucher_regn.php");
+        }
+
+        function show_mr_bw_plan_window() {
+            show_regn_page("/cportal/ip/srp/pnp_regn.php");
+        }
+
+        function show_ur_window() {
+            show_regn_page("/cportal/ip/srp/user_regn.php");
+        }
+
+        function show_pr_window() {
+            show_regn_page("/cportal/ip/srp/prepaid_recharge.php");
+        }
+
+        function show_forgot_pass_window() {
+            show_regn_page("/cportal/ip/srp/forgot_pass.php");
+        }
+
+        function show_pmt_gw_window(pgw_id) {
+            var url = "/cportal/ip/srp/go_pgw.php?pgw_id=" + pgw_id;
+            if (window.top) {
+                window.top.location.href = url;
+            } else {
+                window.location.href = url;
+            }
+        }
+
+        function show_saml_window(link_id) {
+            var sp_id = "sp";
+            if (link_id == "link1") {
+                sp_id = srp_config.srp_saml_sp1;
+            } else if (link_id == "link2") {
+                sp_id = srp_config.srp_saml_sp2;
+            } else if (link_id == "link3") {
+                sp_id = srp_config.srp_saml_sp3;
+            }
+            show_saml_regn_page(sp_id, "/cportal/ip/srp/saml_regn.php");
+        }
+    </script>
+</head>
+
+<body onload="init()">
+
+    <div class="loginContent">
+        <div class="loginLeft">
+
+            <form method="post" name="submit_login" action="/submit/user_login.php">
+                <div class="top_logo_div">
+                    <img class="top_logo" src="/cportal/top_logo.gif?v=2">
+                </div>
+
+                <div class="mobile-text">
+                    <h2>WELCOME</h2>
+                    <p id="srp_login_help_id"> Please login to access the internet </p>
+                </div>
+
+                <div id="myModal" class="modal">
+                    <div class="modal-content">
+                        <span id="modal-span" class="modal-close">&times;</span>
+                        <p id="id-modal-msg" align="center"></p>
+                    </div>
+                </div>
+
+                <div class="show-menu">
+                    <div id="srp_mid_link_id" style="visibility:hidden;display:none;">
+                        <table class="submit_table" style="margin-top:5px;" width="95%" border="0" cellpadding="2" cellspacing="1">
+                            <tr align="center">
+                                <td class="submit_table bot-links"><a href="javascript:void(0)" onclick="show_mid_window();"><span id="srp_mid_label_id" style="color:blue;font-size:24px;">Member Login</span></a></td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div id="srp_saml_link_id1" style="visibility:hidden;display:none;">
+                        <table class="submit_table" style="margin-top:5px;" width="95%" border="0" cellpadding="2" cellspacing="1">
+                            <tr align="center">
+                                <td class="submit_table bot-links"><a href="javascript:void(0)" onclick="show_saml_window('link1');">
+          <span id="srp_saml_label_id1" style="color:blue;font-size:14px;">SAML Login</span></a></td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div id="srp_saml_link_id2" style="visibility:hidden;display:none;">
+                        <table class="submit_table" style="margin-top:5px;" width="95%" border="0" cellpadding="2" cellspacing="1">
+                            <tr align="center">
+                                <td class="submit_table bot-links"><a href="javascript:void(0)" onclick="show_saml_window('link2');">
+          <span id="srp_saml_label_id2" style="color:blue;font-size:14px;">SAML Login</span></a></td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div id="srp_saml_link_id3" style="visibility:hidden;display:none;">
+                        <table class="submit_table" style="margin-top:5px;" width="95%" border="0" cellpadding="2" cellspacing="1">
+                            <tr align="center">
+                                <td class="submit_table bot-links"><a href="javascript:void(0)" onclick="show_saml_window('link3');">
+          <span id="srp_saml_label_id3" style="color:blue;font-size:14px;">SAML Login</span></a></td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div id="srp_pgw_ve_link_id" style="visibility:hidden;display:none;">
+                        <table class="submit_table" style="margin-top:5px;" width="95%" border="0" cellpadding="2" cellspacing="1">
+                            <tr align="center">
+                                <td class="submit_table bot-links"><a href="javascript:void(0)" onclick="show_pmt_gw_window('pgw_ve');">
+          <span id="srp_pgw_ve_label_id" style="color:blue;font-size:13px;">Account Recharge</span></a></td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div id="srp_pgw_sb_link_id" style="visibility:hidden;display:none;">
+                        <table class="submit_table" style="margin-top:5px;" width="95%" border="0" cellpadding="2" cellspacing="1">
+                            <tr align="center">
+                                <td class="submit_table bot-links"><a href="javascript:void(0)" onclick="show_pmt_gw_window('pgw_sb');">
+          <span id="srp_pgw_sb_label_id" style="color:blue;font-size:13px;">SmartBytes Data Topup</span></a></td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div id="srp_mr_link_id" style="visibility:hidden;display:none;">
+                        <table class="submit_table" style="margin-top:5px;" width="95%" border="0" cellpadding="2" cellspacing="1">
+                            <tr align="center">
+                                <td class="submit_table bot-links"><a href="javascript:void(0)" onclick="show_mr_window();"><span id="srp_mr_label_id">Create Account</span></a></td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div id="srp_pnp_link_id" style="visibility:hidden;display:none;">
+                        <table class="submit_table" style="margin-top:5px;" width="95%" border="0" cellpadding="2" cellspacing="1">
+                            <tr align="center">
+                                <td class="submit_table bot-links"><a href="javascript:void(0)" onclick="show_mr_bw_plan_window();"><span id="srp_pnp_label_id">Purchase New Plan</span></a></td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div id="srp_ur_link_id" style="visibility:hidden;display:none;">
+                        <table class="submit_table" style="margin-top:5px;" width="95%" border="0" cellpadding="2" cellspacing="1">
+                            <tr align="center">
+                                <td class="submit_table bot-links"><a href="javascript:void(0)" onclick="show_ur_window();"><span id="srp_ur_label_id">Create User Account</span></a></td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div id="srp_vr_link_id" style="visibility:hidden;display:none;">
+                        <table class="submit_table" style="margin-top:5px;" width="95%" border="0" cellpadding="2" cellspacing="1">
+                            <tr align="center">
+                                <td class="submit_table bot-links"><a href="javascript:void(0)" onclick="show_vr_window();"><span id="srp_vr_label_id">Register Coupon</span></a></td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div id="srp_pr_link_id" style="visibility:hidden;display:none;">
+                        <table class="submit_table" style="margin-top:5px;" width="95%" border="0" cellpadding="2" cellspacing="1">
+                            <tr align="center">
+                                <td class="submit_table bot-links"><a href="javascript:void(0)" onclick="show_pr_window();"><span id="srp_pr_label_id">Prepaid Account Recharge</span></a></td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div id="forgot_pass_link_id" style="visibility:hidden;display:none;">
+                        <table class="submit_table" style="margin-top:5px;" width="95%" border="0" cellpadding="2" cellspacing="1">
+                            <tr align="center">
+                                <td class="submit_table bot-links"><a href="javascript:void(0)" onclick="show_forgot_pass_window();"><span id="f_pass_label_id">Forgot Password</span></a></td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+                <h2 class="existingTitle"> Existing Users</h2>
+                <div class="existing-user-box">
+                    <table class="main_table" width="95%" border="1" cellpadding="2" cellspacing="1">
+                        <tr>
+                            <td><input type="text" name="usrname" id="usrname" class="txtbox" placeholder="User Id"><img src="/cportal/user.png"></td>
+                        </tr>
+                        <tr>
+                            <td class="pw-input"><input type="password" name="newpasswd" id="newpasswd" class="txtbox" placeholder="Password" onpaste="return false" ondrop="return false" ondrag="return false" oncopy="return false" autocomplete="off"><img src="/cportal/pw.png"></td>
+                        </tr>
+                        <tr>
+                            <td class="terms-conds"><label for="checkbox">
+    <input type="checkbox" style="margin-left:5px;cursor: pointer;zoom:1.2" name="terms" id="terms">
+    <span class="label-text"></span>
+  </label>Accept
+                                <a class="terms-conds" href="javascript:void(0)" onclick="showTermsWindow();">
+                                    <font color="#fff" xsize="2"> Terms and Conditions</font>
+                                </a>
+                            </td>
+                        </tr>
+                    </table>
+                    <table class="submit_table" width="95%" border="0" cellpadding="2" cellspacing="1">
+                        <tr align="center">
+                            <td class="submit_table sbmtBtn" colspan="2">
+                                <input type="hidden" name="page_sid" id="page_sid" value="internal">
+                                <input type="hidden" name="org_url" id="org_url" value="">
+                                <input type="submit" name="update_btn" value="Login" id="update_btn" class="submit_btn" onClick="return checkFormFields()">
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </form>
+
+            <div align="center" id="id_div_sn_login" style="visibility:hidden;display:none;margin-top:5px;">
+                <form method="post" name="snform" action="/cportal/ip/srp/sn_login.php">
+                    <input type="hidden" name="sn_type" id="sn_type" value="">
+                    <input type="hidden" name="sn_page_sid" id="sn_page_sid" value="internal">
+                    <input type="hidden" name="sn_org_url" id="sn_org_url" value="">
+                    <div id="srp_sngg_link_id" style="visibility:hidden;display:none;">
+                        <input type="image" src="/cportal/btn_google_login.png" alt="Google SignIn" onclick="return snLoginClick('google');">
+                    </div>
+                    <div id="srp_snfb_link_id" style="visibility:hidden;display:none;">
+                        <input type="image" src="/cportal/btn_facebook_login.png" alt="Facebook SignIn" onclick="return snLoginClick('facebook');">
+                    </div>
+                    <div id="srp_sntw_link_id" style="visibility:hidden;display:none;">
+                        <input type="image" src="/cportal/btn_twitter_login.png" alt="Twitter SignIn" onclick="return snLoginClick('twitter');">
+                    </div>
+                    <div id="srp_snig_link_id" style="visibility:hidden;display:none;">
+                        <input type="image" src="/cportal/btn_instagram_login.png" alt="Instagram SignIn" onclick="return snLoginClick('instagram');">
+                    </div>
+                </form>
+            </div>
+
+            <div class="bottom_logo_div">
+                <img class="bot_logo" alt=" " src="/cportal/footer_logo.png">
+            </div>
+
+        </div>
+        <div class="welcomeTxt">
+        </div>
+    </div>
+</body>
+
+</html>
